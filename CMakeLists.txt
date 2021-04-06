@@ -1,0 +1,6 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.8)
+SET(CMAKE_CXX_STANDARD 20)
+
+PROJECT(parser)
+
+add_executable("${PROJECT_NAME}" main.cpp)
