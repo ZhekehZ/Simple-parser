@@ -1,4 +1,5 @@
 #pragma once
+
 #include <array>
 #include <vector>
 #include <variant>
@@ -16,6 +17,7 @@ namespace lexer {
         WHILE,      // while
         END,        // end
         OPERATOR,   // <>+-*/
+        EXPRESSION_FINISH_META,
     };
 
     struct token {
@@ -284,6 +286,10 @@ namespace lexer {
                     continue;
                 }
 
+                if (!opened) {
+                    output.emplace_back(pos, 0, kind::EXPRESSION_FINISH_META); // meta-token as statement delimiter
+                }
+
                 return opened
                         ? error {
                             .cause = errors::UNCLOSED_PARENTHESIS,
@@ -344,5 +350,63 @@ namespace lexer {
         }
     };
 
-    using program = combinators::many<statement>;
+    using program = combinators::sequence<whitespaces, combinators::many<statement>>;
+
+    enum operator_type {
+        PLUS,
+        MINUS,
+        MULTIPLICATION,
+        DIVISION,
+        LESS,
+        GREATER,
+        UNDEFINED
+    };
+
+    operator_type get_operator_type(token tok, std::string_view sv) {
+        switch (sv[tok.begin]) {
+            case '+': return PLUS;
+            case '-': return MINUS;
+            case '*': return MULTIPLICATION;
+            case '/': return DIVISION;
+            case '<': return LESS;
+            case '>': return GREATER;
+        }
+        return UNDEFINED;
+    }
+
+    class token_storage {
+    public:
+        explicit token_storage(std::vector<lexer::token> const & tokens) {
+            it_ = tokens.begin();
+            end_ = tokens.end();
+            while (end_ != it_ && (end_ - 1)->type == lexer::kind::WHITESPACE) {
+                --end_;
+            }
+        }
+
+        explicit operator bool() const {
+            return it_ != end_;
+        }
+
+        lexer::token next() {
+            while (it_->type == lexer::kind::WHITESPACE && it_ != end_) {
+                ++it_;
+            }
+            return *(it_++);
+        }
+
+        [[nodiscard]]
+        lexer::token peek() const {
+            auto itt = it_;
+            while (itt->type == lexer::kind::WHITESPACE && it_ != end_) {
+                ++itt;
+            }
+            return *itt;
+        }
+
+    private:
+        std::vector<lexer::token>::const_iterator it_;
+        std::vector<lexer::token>::const_iterator end_;
+    };
+
 }

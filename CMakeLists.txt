@@ -1,9 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.8)
 
 SET(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror -O3")
 
 PROJECT(parser)
 
+FILE(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.h)
 
-add_executable("${PROJECT_NAME}" main.cpp lexer.h)
+add_executable("${PROJECT_NAME}" main.cpp "${SOURCES}")
