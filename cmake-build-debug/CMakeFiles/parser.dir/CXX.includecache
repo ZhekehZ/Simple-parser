@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zzzheka/Документы/cpptmp/lexer.h
+array
+-
+vector
+-
+variant
+-
+
+/home/zzzheka/Документы/cpptmp/main.cpp
+string_view
+-
+cctype
+-
+iostream
+-
+lexer.h
+/home/zzzheka/Документы/cpptmp/lexer.h
+parser.h
+/home/zzzheka/Документы/cpptmp/parser.h
+
+/home/zzzheka/Документы/cpptmp/parser.h
+vector
+-
+cassert
+-
+lexer.h
+/home/zzzheka/Документы/cpptmp/lexer.h
+
