@@ -25,15 +25,17 @@ jobs:
     - name: Get Conan
       uses: turtlebrowser/get-conan@v1.0
 
-    - name: Run conan
-      working-directory: ${{github.workspace}}/build
-      run: conan install ..
-  
     - name: Setup compiler
       run: |
           sudo apt-get install gcc-10 g++-10 clang-10
           export CXX=clang++-10
 
+    - name: Run conan
+      working-directory: ${{github.workspace}}/build
+      run: |
+        export CXX=clang++-10
+        conan install ..
+  
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
       # access regardless of the host operating system
