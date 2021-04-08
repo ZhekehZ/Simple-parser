@@ -28,6 +28,11 @@ jobs:
     - name: Run conan
       working-directory: ${{github.workspace}}/build
       run: conan install ..
+  
+    - name: Setup compiler
+      run: |
+          apt-get install gcc-10 g++-10 clang-10
+          export CXX=clang++-10
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
