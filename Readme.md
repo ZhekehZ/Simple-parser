@@ -1,4 +1,5 @@
 ## Simple parser with unused assignments analyzer
+[![CMake](https://github.com/ZhekehZ/repo1/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/ZhekehZ/repo1/actions/workflows/cmake.yml)
 
 ### Language
 ```hs
