@@ -1,7 +1,7 @@
 ## Simple parser with unused assignments analyzer
 
 ### Language
-```
+```hs
 program ::= statement_list
 statement_list ::= statement 
                  | statement_list statement
