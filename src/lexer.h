@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <variant>
+#include <cctype>
 
 namespace lexer {
 
@@ -21,8 +22,12 @@ namespace lexer {
     };
 
     struct token {
-        uint32_t begin, len;
+        uint32_t begin;
+        uint32_t len;
         kind type;
+
+        token (uint32_t begin, uint32_t len, kind type)
+            : begin(begin), len(len), type(type) {} // Required for clang
     };
 
     struct error {
@@ -128,7 +133,7 @@ namespace lexer {
                     ++curr_pos;
                 }
 
-                output.emplace_back(pos, curr_pos - pos, KIND);
+                output.template emplace_back(pos, curr_pos - pos, KIND);
                 return curr_pos;
             }
         };
@@ -150,7 +155,7 @@ namespace lexer {
                     };
                 }
 
-                output.emplace_back(pos, 1, KIND);
+                output.template emplace_back(pos, 1, KIND);
                 return pos + 1;
             }
         };
@@ -287,7 +292,8 @@ namespace lexer {
                 }
 
                 if (!opened) {
-                    output.emplace_back(pos, 0, kind::EXPRESSION_FINISH_META); // meta-token as statement delimiter
+                    // meta-token as statement delimiter
+                    output.emplace_back(pos, 0, kind::EXPRESSION_FINISH_META);
                 }
 
                 return opened
@@ -322,6 +328,7 @@ namespace lexer {
 
                     maybe<whitespaces>(output, pos, str);
                     ++opened;
+                    continue;
                 }
 
                 if (is_success(tok = assignment::parse(output, pos, str))) {
@@ -342,10 +349,14 @@ namespace lexer {
                     return {pos};
                 }
 
-                return error {
-                    .cause = errors::UNFINISHED_STATEMENT,
-                    .pos = pos,
-                };
+                if (opened) {
+                    return error{
+                            .cause = errors::UNFINISHED_STATEMENT,
+                            .pos = pos,
+                    };
+                } else {
+                    return tok;
+                }
             }
         }
     };
